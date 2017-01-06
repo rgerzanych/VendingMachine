@@ -60,12 +60,20 @@ namespace VendingMachine.Business
 			var denominatedBallance = _currentBalance.Denominate();
 			var denominatedAmount = amount.Denominate();
 
-			_currentBalance.Parse(denominatedBallance + denominatedAmount);
+			_currentBalance = _currentBalance.Parse(denominatedBallance + denominatedAmount);
 		}
 
 		public Money ReturnMoney()
 		{
-			throw new NotImplementedException();
+			if (_currentBalance.Denominate() == 0)
+			{
+				throw new InvalidOperationException("Balance is empty. Nothing to return");
+			}
+
+			var change = _currentBalance;
+			_currentBalance = new Money(0, 0);
+
+			return change;
 		}
 
 		public Product BuyProduct(int productNumber)

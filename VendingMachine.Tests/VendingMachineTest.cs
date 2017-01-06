@@ -22,7 +22,7 @@ namespace VendingMachine.Tests
 			_vendingMachine = GetVendingMachine(new Money(euros, cents));
 
 			//Act
-			_vendingMachine.InsertCoin(new Money(1, 0));
+			_vendingMachine.InsertCoin(new Money(0, 50));
 			var ex = Assert.Catch<InvalidOperationException>(() => _vendingMachine.BuyProduct(1));
 
 			//Assert
@@ -60,6 +60,56 @@ namespace VendingMachine.Tests
 			Assert.AreEqual(_vendingMachine.Amount, new Money(0, 50));
 		}
 
+		[Test]
+		[TestCase(0, 0, 0, 0, 0, 0)]
+		[TestCase(0, 0, 3, 20, 3, 20)]
+		[TestCase(0, 0, 0, 10, 0, 10)]
+		[TestCase(1, 0, 0, 0, 1, 0)]
+		[TestCase(1, 0, 0, 50, 1, 50)]
+		[TestCase(0, 10, 0, 0, 0, 10)]
+		[TestCase(0, 10, 1, 10, 1, 20)]
+		public void InsertCoin_CorrectBalance_ReturnsSuccess(int eurosInsert, int centsInsert, int eurosBalance, int centsBalance, int eurosExpected, int centsExpected)
+		{
+			//Arrange
+			_vendingMachine = GetVendingMachine(new Money(eurosBalance, centsBalance));
+
+			//Act
+			_vendingMachine.InsertCoin(new Money(eurosInsert, centsInsert));
+
+			//Assert
+			Assert.AreEqual(_vendingMachine.Amount.Euros, eurosExpected);
+			Assert.AreEqual(_vendingMachine.Amount.Cents, centsExpected);
+		}
+
+		[Test]
+		public void ReturnMoney_BalanceIsNotEmpty_ReturnsSuccess()
+		{
+			//Arrange
+			_vendingMachine = GetVendingMachine(new Money(1, 50));
+
+			//Act
+			var change = _vendingMachine.ReturnMoney();
+
+			//Assert
+			Assert.AreEqual(_vendingMachine.Amount.Euros, 0);
+			Assert.AreEqual(_vendingMachine.Amount.Cents, 0);
+			Assert.AreEqual(change.Euros, 1);
+			Assert.AreEqual(change.Cents, 50);
+		}
+
+		[Test]
+		public void ReturnMoney_BalanceIsEmpty_ReturnsFailed()
+		{
+			//Arrange
+			_vendingMachine = GetVendingMachine();
+
+			//Act
+			var ex = Assert.Catch<InvalidOperationException>(() => _vendingMachine.ReturnMoney());
+
+			//Assert
+			StringAssert.Contains("Balance is empty. Nothing to return", ex.Message);
+		}
+
 		private Dictionary<int, Product> GetSampleProductsStore()
 		{
 			var _storeData = new Dictionary<int, Product>();
@@ -72,6 +122,11 @@ namespace VendingMachine.Tests
 			return _storeData;
 		}
 
+
+		private IVendingMachine GetVendingMachine()
+		{
+			return GetVendingMachine(new Money(0, 0));
+		}
 		private IVendingMachine GetVendingMachine(Money startBallance)
 		{
 			//todo: should be rewritten

@@ -40,8 +40,8 @@ namespace VendingMachine.Tests
 
 			//Assert
 			Assert.IsNotNull(product);
-			Assert.AreEqual(product.Name, "Product 1");
-			Assert.AreEqual(product.Price, new Money(2, 50));
+			Assert.AreEqual("Product 1", product.Name);
+			Assert.AreEqual(new Money(2, 50), product.Price);
 		}
 
 		[Test]
@@ -55,9 +55,9 @@ namespace VendingMachine.Tests
 
 			//Assert
 			Assert.IsNotNull(product);
-			Assert.AreEqual(product.Name, "Product 1");
-			Assert.AreEqual(product.Price, new Money(2, 50));
-			Assert.AreEqual(_vendingMachine.Amount, new Money(0, 50));
+			Assert.AreEqual("Product 1", product.Name);
+			Assert.AreEqual(new Money(2, 50), product.Price);
+			Assert.AreEqual(new Money(0, 50), _vendingMachine.Amount);
 		}
 
 		[Test]
@@ -77,8 +77,8 @@ namespace VendingMachine.Tests
 			_vendingMachine.InsertCoin(new Money(eurosInsert, centsInsert));
 
 			//Assert
-			Assert.AreEqual(_vendingMachine.Amount.Euros, eurosExpected);
-			Assert.AreEqual(_vendingMachine.Amount.Cents, centsExpected);
+			Assert.AreEqual(eurosExpected, _vendingMachine.Amount.Euros);
+			Assert.AreEqual(centsExpected, _vendingMachine.Amount.Cents);
 		}
 
 		[Test]
@@ -93,8 +93,8 @@ namespace VendingMachine.Tests
 			//Assert
 			Assert.AreEqual(_vendingMachine.Amount.Euros, 0);
 			Assert.AreEqual(_vendingMachine.Amount.Cents, 0);
-			Assert.AreEqual(change.Euros, 1);
-			Assert.AreEqual(change.Cents, 50);
+			Assert.AreEqual(1, change.Euros);
+			Assert.AreEqual(50, change.Cents);
 		}
 
 		[Test]
@@ -132,12 +132,12 @@ namespace VendingMachine.Tests
 			//todo: should be rewritten
 			var fakeStore = new FakeVendingMachineStore();
 
-			return new Business.VendingMachine(fakeStore, startBallance);
+			return new Business.VendingMachine("Fake Vending Machine", fakeStore, startBallance);
 		}
 
 		internal class FakeVendingMachineStore : IVendingMachineStore
 		{
-			public void AppendProduct(int number, string productName, Money price, int amount = 1)
+			public void AddProduct(int number, string productName, Money price, int amount = 1)
 			{
 				throw new NotImplementedException();
 			}
@@ -162,7 +162,7 @@ namespace VendingMachine.Tests
 				throw new NotImplementedException();
 			}
 
-			public Product GetProduct(int number)
+			public Product GetProductByNumber(int number)
 			{
 				return new Product()
 				{

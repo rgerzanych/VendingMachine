@@ -13,24 +13,19 @@ namespace VendingMachine.Business
 		private Money _currentBalance;
 		private readonly IVendingMachineStore _store;
 
-		public VendingMachine(IVendingMachineStore store) : this(store, new Money(0, 0))
+		public VendingMachine(string manufacturer, IVendingMachineStore store) : this(manufacturer, store, new Money(0, 0))
 		{
 			
 		}
 
-		public VendingMachine(IVendingMachineStore store, Money currentBallance)
+		public VendingMachine(string manufacturer, IVendingMachineStore store, Money currentBallance)
 		{
+			Manufacturer = manufacturer;
 			_store = store;
 			_currentBalance = currentBallance;
 		}
 
-		public string Manufacturer
-		{
-			get
-			{
-				throw new NotImplementedException();
-			}
-		}
+		public string Manufacturer { get; }
 
 		public Money Amount
 		{
@@ -78,7 +73,7 @@ namespace VendingMachine.Business
 
 		public Product BuyProduct(int productNumber)
 		{
-			var product = _store.GetProduct(productNumber);
+			var product = _store.GetProductByNumber(productNumber);
 			var denominatedBallance = _currentBalance.Denominate();
 			var denominatedProductPrice = product.Price.Denominate();
 

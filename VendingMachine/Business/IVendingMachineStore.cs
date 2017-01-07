@@ -8,7 +8,7 @@ namespace VendingMachine.Business
 {
 	public interface IVendingMachineStore
 	{
-		void AppendProduct(int number, string productName, Money price, int amount = 1);
+		void AddProduct(int number, string productName, Money price, int amount = 1);
 
 		void UpdateProductAmount(int number, int amount);
 
@@ -18,6 +18,6 @@ namespace VendingMachine.Business
 
 		void RemoveProduct(int number);
 
-		Product GetProduct(int number);
+		Product GetProductByNumber(int number);
 	}
 }

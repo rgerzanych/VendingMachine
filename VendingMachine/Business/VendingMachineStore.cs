@@ -44,7 +44,7 @@ namespace VendingMachine.Business
 
 		public void ClearProducts()
 		{
-			throw new NotImplementedException();
+			_store.Clear();
 		}
 
 		public IDictionary<int, Product> GetProducts()
@@ -54,12 +54,16 @@ namespace VendingMachine.Business
 
 		public void RemoveProduct(int number)
 		{
-			throw new NotImplementedException();
+			CheckProductInStore(number);
+
+			_store.Remove(number);
 		}
 
 		public Product GetProductByNumber(int number)
 		{
-			throw new NotImplementedException();
+			CheckProductInStore(number);
+
+			return _store[number];
 		}
 
 		private void InitializeStore(IEnumerable<Product> products)
@@ -94,6 +98,14 @@ namespace VendingMachine.Business
 			if (amount <= 0)
 			{
 				throw new InvalidOperationException("Product amount should larger than 0");
+			}
+		}
+
+		private void CheckProductInStore(int number)
+		{
+			if (!_store.ContainsKey(number))
+			{
+				throw new InvalidOperationException(string.Format("Product number {0} is not exists", number));
 			}
 		}
 	}
